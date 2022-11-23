@@ -61,6 +61,7 @@
                 yield* await(read_text(url));
                 url="";
             }
+            return undefined;
         }
         function read_text(url){
           return fetch(url).then(res=>{
