@@ -53,6 +53,14 @@
                         yield [str];
                 }
             }
+            if(strs.length!=0){
+                url=yield strs;
+                strs=[];
+            }
+            if(url!=""){
+                yield* await(read_text(url));
+                url="";
+            }
         }
         function read_text(url){
           return fetch(url).then(res=>{
@@ -63,7 +71,7 @@
                 }
             }).then(str=>complie(str));
         }
-        let story=complie("Start Now!\n+main.txt");
+        let story=complie("-Start Now!\n+main.txt");
     </script>
 </head>
 <body onload="story.next()">
