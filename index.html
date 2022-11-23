@@ -3,7 +3,7 @@
         function dialog(out,text){
             let div=document.createElement("div");
             div.innerText=text;
-            div.dataset.url="";
+            div.dataset.sub="";
             div.onclick=()=>{
                 for(let child of out.childNodes){
                     child.onclick=null;
@@ -11,7 +11,7 @@
                         child.style.color="gray";
                     }
                 }
-                story.next(div.dataset.url);
+                story.next(div.dataset.sub);
             };
             out.appendChild(div);
         }
@@ -19,18 +19,22 @@
             out.innerHTML="";
         }
         async function* complie(text){
-            let list=text.split(/\r\n|\r|\n/).filter((x)=>(x!="+"&&x!="$"&&x!="-"&&x!=""));
+            let list=text.split(/\r\n|\r|\n/).filter((x)=>(x!="+"&&x!="$"&&x!="-"&&x!=">"&&x!=""));
             let out=document.getElementById("out");
             let img=document.getElementById("img");
             let strs=[];
-            let url="";
+            let sub="";
             for(let str of list){
                 switch(str[0]){
                     case "+":
-                        out.lastChild.dataset.url=str.substr(1);
+                        if(strs.length==0){
+                            yield* await(read_text(str.substr(1)));
+                        }
                         break;
                     case "$":
-                        img.style.backgroundImage=`url("${str.substr(1)}")`;
+                        if(strs.length==0){
+                            img.style.backgroundImage=`url("${str.substr(1)}")`;
+                        }
                         break;
                     case "-":
                         if(strs.length==0){
@@ -39,14 +43,19 @@
                         strs=strs.concat(str.substr(1));
                         dialog(out,str.substr(1));
                         break;
+                    case ">":
+                        if(strs.length>0){
+                            out.lastChild.dataset.sub=out.lastChild.dataset.sub+str.substr(1)+"\n";
+                        }
+                        break;
                     default:
                         if(strs.length!=0){
-                            url=yield strs;
+                            sub=yield strs;
                             strs=[];
                         }
-                        if(url!=""){
-                            yield* await(read_text(url));
-                            url="";
+                        if(sub!=""){
+                            yield* await(complie(sub));
+                            sub="";
                         }
                         clear(out);
                         dialog(out,str);
