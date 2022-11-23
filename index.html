@@ -28,7 +28,10 @@
                 switch(str[0]){
                     case "+":
                         if(strs.length==0){
-                            yield* await(read_text(str.substr(1)));
+                            STR=str;
+                            out.innerText="DEBUG";
+                            yield [null];
+                            //yield* await(read_text(str.substr(1)));
                         }else{
                             out.lastChild.dataset.sub=out.lastChild.dataset.sub+str+"\n";
                         }
