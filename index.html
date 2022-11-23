@@ -28,10 +28,7 @@
                 switch(str[0]){
                     case "+":
                         if(strs.length==0){
-                            STR=str;
-                            out.innerText="DEBUG";
-                            yield [null];
-                            //yield* await(read_text(str.substr(1)));
+                            yield* await(read_text(str.substr(1)));
                         }else{
                             out.lastChild.dataset.sub=out.lastChild.dataset.sub+str+"\n";
                         }
@@ -72,12 +69,12 @@
                 }
             }
             if(strs.length!=0){
-                url=yield strs;
+                sub=yield strs;
                 strs=[];
             }
-            if(url!=""){
-                yield* await(read_text(url));
-                url="";
+            if(sub!=""){
+                yield* await(complie(sub));
+                sub="";
             }
             return undefined;
         }
