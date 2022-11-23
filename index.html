@@ -29,11 +29,15 @@
                     case "+":
                         if(strs.length==0){
                             yield* await(read_text(str.substr(1)));
+                        }else{
+                            out.lastChild.dataset.sub=out.lastChild.dataset.sub+str;
                         }
                         break;
                     case "$":
                         if(strs.length==0){
                             img.style.backgroundImage=`url("${str.substr(1)}")`;
+                        }else{
+                            out.lastChild.dataset.sub=out.lastChild.dataset.sub+str;
                         }
                         break;
                     case "-":
@@ -46,8 +50,10 @@
                     case ">":
                         if(strs.length>0){
                             out.lastChild.dataset.sub=out.lastChild.dataset.sub+str.substr(1)+"\n";
+                            break;
+                        }else{
+                            str=str.substr(1);//fall though
                         }
-                        break;
                     default:
                         if(strs.length!=0){
                             sub=yield strs;
@@ -81,7 +87,7 @@
                 }
             }).then(str=>complie(str));
         }
-        let story=complie("-Start Now!\n+main.txt");
+        let story=complie("-Start Now!\n>+main.txt");
     </script>
 </head>
 <body onload="story.next()">
