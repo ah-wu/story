@@ -87,27 +87,50 @@
                 }
             }).then(str=>complie(str));
         }
-        let story=complie("-Start Now!\n>+main.txt");
+        let story=complie("+main.txt");
     </script>
 </head>
-<body onload="story.next()">
+<body>
     <div id="img"
          style="background-size:contain;
                 background-repeat:repeat;
                 outline:none;
                 position:fixed;
                 left:0%;top:0%;
-                width:100%;height:70%;"></div>
-    <div  id="out" 
+                width:100%;height:60%;"></div>
+    <div  id="out" onclick="story.next();this.onclick=null";
           style="user-select:none;
                  color:forestgreen;
-                 font-size:3.0em;
+                 font-size:2.0em;
                  font-weight:bold;
                  background-color:burlywood;
                  outline:none;
                  position:fixed;
-                 left:0%;top:70%;
-                 width:100%;height:30%;
+                 left:0%;top:60%;
+                 width:100%;height:40%;
                  overflow:auto;
-                 white-space:nowrap;">Loading...</div>
+                 white-space:nowrap;">
+                 现在你可以编写自己的互动故事<br>
+                 点击非白色部分进入互动故事的主页<br>
+                 约定:<br>
+                 &nbsp;&nbsp;剧情:当前显示的(或要显示的)是普通文本<br>
+                 &nbsp;&nbsp;互动:当前显示的(或要显示的)是单选文本<br>
+                 对于每1行的第一个字符:<br>
+                 &nbsp;&nbsp;如果不是下列的情况,则为普通文本,直接显示<br>
+                 &nbsp;&nbsp;如果为+:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;其后跟指向另一份文本文件的url,通常是支线<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;只在剧情时有效,在互动时等价于把第一个+替换成&gt;+<br>
+                 &nbsp;&nbsp;如果为$:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;其后跟指向图片的url,图片可以更好地展现剧情<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;只在剧情时有效,在互动时等价于把第一个$替换成&gt;$<br>
+                 &nbsp;&nbsp;如果为-:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;则为单选文本,直到下一个普通文本前,所有的单选文本会集中显示<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;单选文本在显示时,去除第一个-,且每个单选文本占据1行<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;读者可以在互动时,点击任意一行进入不同的分支<br>
+                 &nbsp;&nbsp;如果为&gt;:<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;其后跟分支剧情,分支剧情的约定见本文<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;在剧情时等价于把第一个&gt;去掉(也就是普通文本)<br>
+                 &nbsp;&nbsp;&nbsp;&nbsp;在互动时则为当前要显示的最后1个单选文本的分支<br>
+                 <br>
+    </div>
 </body>
