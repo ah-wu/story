@@ -1,0 +1,89 @@
+<head>
+    <script>
+        function dialog(out,text){
+            let div=document.createElement("div");
+            div.innerText=text;
+            div.dataset.url="";
+            div.onclick=()=>{
+                for(let child of out.childNodes){
+                    child.onclick=null;
+                    if(child!=div){
+                        child.style.color="gray";
+                    }
+                }
+                story.next(div.dataset.url);
+            };
+            out.appendChild(div);
+        }
+        function clear(out){
+            out.innerHTML="";
+        }
+        async function* complie(text){
+            let list=text.split(/\r\n|\r|\n/).filter((x)=>(x!="+"&&x!="$"&&x!="-"&&x!=""));
+            let out=document.getElementById("out");
+            let img=document.getElementById("img");
+            let strs=[];
+            let url="";
+            for(let str of list){
+                switch(str[0]){
+                    case "+":
+                        out.lastChild.dataset.url=str.substr(1);
+                        break;
+                    case "$":
+                        img.style.backgroundImage=`url("${str.substr(1)}")`;
+                        break;
+                    case "-":
+                        if(strs.length==0){
+                            clear(out);
+                        }
+                        strs=strs.concat(str.substr(1));
+                        dialog(out,str.substr(1));
+                        break;
+                    default:
+                        if(strs.length!=0){
+                            url=yield strs;
+                            strs=[];
+                        }
+                        if(url!=""){
+                            yield* await(read_text(url));
+                            url="";
+                        }
+                        clear(out);
+                        dialog(out,str);
+                        yield [str];
+                }
+            }
+        }
+        function read_text(url){
+          return fetch(url).then(res=>{
+                if(res.ok==true){
+                    return res.text();
+                }else{
+                    return "";
+                }
+            }).then(str=>complie(str));
+        }
+        let story=complie("Start Now!\n+main.txt");
+    </script>
+</head>
+<body onload="story.next()">
+    <div id="img"
+         style="background-size:contain;
+                background-repeat:repeat;
+                outline:none;
+                position:fixed;
+                left:0%;top:0%;
+                width:100%;height:70%;"></div>
+    <div  id="out" 
+          style="user-select:none;
+                 color:forestgreen;
+                 font-size:3.0em;
+                 font-weight:bold;
+                 background-color:burlywood;
+                 outline:none;
+                 position:fixed;
+                 left:0%;top:70%;
+                 width:100%;height:30%;
+                 overflow:auto;
+                 white-space:nowrap;">Loading...</div>
+</body>
